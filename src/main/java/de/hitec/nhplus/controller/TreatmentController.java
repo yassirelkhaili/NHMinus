@@ -44,7 +44,7 @@ public class TreatmentController {
     public void initializeController(AllTreatmentController controller, Stage stage, Treatment treatment) {
         this.stage = stage;
         this.controller= controller;
-        PatientDao pDao = DaoFactory.getDaoFactory().createPatientDAO();
+        PatientDao pDao = DaoFactory.getDaoFactory().createPatientDao();
         try {
             this.patient = pDao.read((int) treatment.getPid());
             this.treatment = treatment;
