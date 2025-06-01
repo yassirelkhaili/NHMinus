@@ -11,7 +11,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
+import de.hitec.nhplus.Main;
 import java.io.IOException;
 
 public class MainWindowController {
@@ -59,56 +59,10 @@ public class MainWindowController {
             Stage currentStage = (Stage) mainBorderPane.getScene().getWindow();
 
             // Show login window again
-            showLoginWindow();
+            new Main().showLoginWindow();
 
             // Close current main window
             currentStage.close();
-        }
-    }
-
-    /**
-     * Show the login window
-     */
-    public void showLoginWindow() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/de/hitec/nhplus/AuthView.fxml"));
-            AnchorPane loginPane = loader.load();
-
-            Scene loginScene = new Scene(loginPane);
-
-            Stage loginStage = new Stage();
-            loginStage.setTitle("NHPlus - Anmeldung");
-            loginStage.setScene(loginScene);
-            loginStage.setResizable(false);
-            loginStage.centerOnScreen();
-
-            // Handle close request for login window
-            loginStage.setOnCloseRequest(event -> {
-                Platform.exit();
-                System.exit(0);
-            });
-
-            loginStage.show();
-
-        } catch (IOException e) {
-            System.err.println("Fehler beim Öffnen des Login-Fensters: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Handle application exit
-     */
-    @FXML
-    private void handleExit() {
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Anwendung beenden");
-        confirmAlert.setHeaderText("Möchten Sie die Anwendung wirklich beenden?");
-
-        if (confirmAlert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            Platform.exit();
-            System.exit(0);
         }
     }
 

@@ -76,7 +76,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" prefWidth="110.0" prefHeight="40.0" text="Abbrechen">
+                        <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleExit" prefWidth="110.0" prefHeight="40.0" text="Abbrechen">
                            <font>
                               <Font size="14.0" />
                            </font>

@@ -4,11 +4,12 @@ import de.hitec.nhplus.Main;
 import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.UserDao;
 import de.hitec.nhplus.model.User;
-
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -137,11 +138,18 @@ public class LoginController implements Initializable {
     }
 
     /**
-     * Handle cancel button click
+     * Handle application exit
      */
     @FXML
-    private void handleCancel() {
-        System.exit(0);
+    private void handleExit() {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Anwendung beenden");
+        confirmAlert.setHeaderText("Möchten Sie die Anwendung wirklich beenden?");
+
+        if (confirmAlert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            Platform.exit();
+            System.exit(0);
+        }
     }
 
     /**
