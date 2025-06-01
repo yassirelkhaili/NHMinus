@@ -8,7 +8,6 @@ import de.hitec.nhplus.datastorage.UserDao;
 import de.hitec.nhplus.model.Patient;
 import de.hitec.nhplus.model.Treatment;
 import de.hitec.nhplus.model.User;
-import de.hitec.nhplus.utils.HashPassword;
 
 import java.sql.Connection;
 import java.sql.SQLException;
