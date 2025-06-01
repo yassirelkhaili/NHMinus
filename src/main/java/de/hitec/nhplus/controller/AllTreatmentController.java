@@ -88,7 +88,7 @@ public class AllTreatmentController {
     }
 
     private void createComboBoxData() {
-        PatientDao dao = DaoFactory.getDaoFactory().createPatientDAO();
+        PatientDao dao = DaoFactory.getDaoFactory().createPatientDao();
         try {
             patientList = (ArrayList<Patient>) dao.readAll();
             this.patientSelection.add("alle");
