@@ -189,10 +189,10 @@ public class AllPatientController {
      * @param event Event including the changed object and the change.
      */
     @FXML
-    public void handleOnEditAssets(TableColumn.CellEditEvent<Patient, String> event){
+    /*public void handleOnEditAssets(TableColumn.CellEditEvent<Patient, String> event){
         event.getRowValue().setAssets(event.getNewValue());
         this.doUpdate(event);
-    }
+    }*/
 
     /**
      * Updates a patient by calling the method <code>update()</code> of {@link PatientDao}.
@@ -252,9 +252,9 @@ public class AllPatientController {
         LocalDate date = DateConverter.convertStringToLocalDate(birthday);
         String careLevel = this.textFieldCareLevel.getText();
         String roomNumber = this.textFieldRoomNumber.getText();
-        String assets = this.textFieldAssets.getText();
+
         try {
-            this.dao.create(new Patient(firstName, surname, date, careLevel, roomNumber, assets));
+            this.dao.create(new Patient(firstName, surname, date, careLevel, roomNumber));
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -271,7 +271,7 @@ public class AllPatientController {
         this.textFieldDateOfBirth.clear();
         this.textFieldCareLevel.clear();
         this.textFieldRoomNumber.clear();
-        this.textFieldAssets.clear();
+
     }
 
     private boolean areInputDataValid() {
