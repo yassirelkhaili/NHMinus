@@ -50,6 +50,12 @@ public class AllPatientController {
     private TableColumn<Patient, String> columnAssets;
 
     @FXML
+    private TableColumn<Patient, String> columnStatus;
+
+    @FXML
+    private TableColumn<Patient, String> columnBlockDate;
+
+    @FXML
     private Button buttonDelete;
 
     @FXML
@@ -72,6 +78,13 @@ public class AllPatientController {
 
     @FXML
     private TextField textFieldAssets;
+
+    @FXML
+    private TextField textFieldStatus;
+
+    @FXML
+    private TextField textFieldBlockDate;
+
 
     private final ObservableList<Patient> patients = FXCollections.observableArrayList();
     private PatientDao dao;
@@ -106,6 +119,20 @@ public class AllPatientController {
         this.columnAssets.setCellValueFactory(new PropertyValueFactory<>("assets"));
         this.columnAssets.setCellFactory(TextFieldTableCell.forTableColumn());
 
+//        this.columnStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
+//        this.columnStatus.setCellFactory(TextFieldTableCell.forTableColumn());
+//
+//        this.columnBlockDate.setCellValueFactory(cellData -> cellData.getValue().blockDateProperty());
+//        this.columnBlockDate.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        this.columnStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        this.columnStatus.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        this.columnBlockDate.setCellValueFactory(new PropertyValueFactory<>("blockDate"));
+        this.columnBlockDate.setCellFactory(TextFieldTableCell.forTableColumn());
+
+
+
         //Anzeigen der Daten
         this.tableView.setItems(this.patients);
 
@@ -126,6 +153,8 @@ public class AllPatientController {
         this.textFieldCareLevel.textProperty().addListener(inputNewPatientListener);
         this.textFieldRoomNumber.textProperty().addListener(inputNewPatientListener);
         this.textFieldAssets.textProperty().addListener(inputNewPatientListener);
+        this.textFieldStatus.textProperty().addListener(inputNewPatientListener);
+        this.textFieldBlockDate.textProperty().addListener(inputNewPatientListener);
     }
 
     /**
@@ -194,6 +223,21 @@ public class AllPatientController {
         this.doUpdate(event);
     }
 
+
+    @FXML
+    public void handleOnEditStatus(TableColumn.CellEditEvent<Patient, String> event) {
+        event.getRowValue().setStatus(event.getNewValue());   // ✅ Correct Field
+        this.doUpdate(event);
+    }
+
+    @FXML
+    public void handleOnEditBlockDate(TableColumn.CellEditEvent<Patient, String> event) {
+        event.getRowValue().setBlockDate(event.getNewValue());   // ✅ Correct Field
+        this.doUpdate(event);
+    }
+
+
+
     /**
      * Updates a patient by calling the method <code>update()</code> of {@link PatientDao}.
      *
@@ -253,8 +297,10 @@ public class AllPatientController {
         String careLevel = this.textFieldCareLevel.getText();
         String roomNumber = this.textFieldRoomNumber.getText();
         String assets = this.textFieldAssets.getText();
+        String status = this.textFieldStatus.getText();
+        String blockDate = this.textFieldBlockDate.getText();
         try {
-            this.dao.create(new Patient(firstName, surname, date, careLevel, roomNumber, assets));
+            this.dao.create(new Patient(firstName, surname, date, careLevel, roomNumber, assets, status, blockDate));
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -272,6 +318,8 @@ public class AllPatientController {
         this.textFieldCareLevel.clear();
         this.textFieldRoomNumber.clear();
         this.textFieldAssets.clear();
+        this.textFieldStatus.clear();
+        this.textFieldBlockDate.clear();
     }
 
     private boolean areInputDataValid() {
@@ -285,6 +333,7 @@ public class AllPatientController {
 
         return !this.textFieldFirstName.getText().isBlank() && !this.textFieldSurname.getText().isBlank() &&
                 !this.textFieldDateOfBirth.getText().isBlank() && !this.textFieldCareLevel.getText().isBlank() &&
-                !this.textFieldRoomNumber.getText().isBlank() && !this.textFieldAssets.getText().isBlank();
+                !this.textFieldRoomNumber.getText().isBlank() && !this.textFieldAssets.getText().isBlank() &&
+                !this.textFieldStatus.getText().isBlank() && !this.textFieldBlockDate.getText().isBlank();
     }
 }

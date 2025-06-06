@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +20,9 @@ public class Patient extends Person {
     private final SimpleStringProperty assets;
     private final List<Treatment> allTreatments = new ArrayList<>();
 
-    private Status patientStatus;
+    private final SimpleStringProperty patientStatus; //new
+    private final SimpleStringProperty blockDate; //new
+
 
 
     /**
@@ -33,12 +36,14 @@ public class Patient extends Person {
      * @param roomNumber Room number of the patient.
      * @param assets Assets of the patient.
      */
-    public Patient(String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets) {
+    public Patient(String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets, String patientStatus, String blockDate) {
         super(firstName, surname);
         this.dateOfBirth = new SimpleStringProperty(DateConverter.convertLocalDateToString(dateOfBirth));
         this.careLevel = new SimpleStringProperty(careLevel);
         this.roomNumber = new SimpleStringProperty(roomNumber);
         this.assets = new SimpleStringProperty(assets);
+        this.patientStatus = new SimpleStringProperty(patientStatus); //new
+        this.blockDate = new SimpleStringProperty(blockDate); //new
     }
 
     /**
@@ -53,14 +58,28 @@ public class Patient extends Person {
      * @param roomNumber Room number of the patient.
      * @param assets Assets of the patient.
      */
-    public Patient(long pid, String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets) {
+    public Patient(long pid, String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets, String patientStatus, String blockDate) {
         super(firstName, surname);
         this.pid = new SimpleLongProperty(pid);
         this.dateOfBirth = new SimpleStringProperty(DateConverter.convertLocalDateToString(dateOfBirth));
         this.careLevel = new SimpleStringProperty(careLevel);
         this.roomNumber = new SimpleStringProperty(roomNumber);
         this.assets = new SimpleStringProperty(assets);
+        this.patientStatus = new SimpleStringProperty(patientStatus); //new
+        this.blockDate = new SimpleStringProperty(blockDate); //new
     }
+
+    public void setStatus(String status) { this.patientStatus.set(status); }
+
+    public String getStatus() { return patientStatus.get(); } //new
+
+    public SimpleStringProperty statusProperty() { return patientStatus; } //new
+
+    public void setBlockDate(String blockDate) { this.blockDate.set(blockDate); }
+
+    public String getBlockDate() { return blockDate.get(); } //new
+
+    public SimpleStringProperty blockDateProperty() { return blockDate; } //new
 
     public long getPid() {
         return pid.get();

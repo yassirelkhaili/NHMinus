@@ -2,6 +2,7 @@ package de.hitec.nhplus.controller;
 
 import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.TreatmentDao;
+import de.hitec.nhplus.model.Status;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -36,6 +37,12 @@ public class NewTreatmentController {
     private TextArea textAreaRemarks;
 
     @FXML
+    private ComboBox<Status> comboBoxStatus;
+
+    @FXML
+    private DatePicker datePickerBlockDate;
+
+    @FXML
     private DatePicker datePicker;
 
     @FXML
@@ -57,6 +64,8 @@ public class NewTreatmentController {
         this.textFieldEnd.textProperty().addListener(inputNewPatientListener);
         this.textFieldDescription.textProperty().addListener(inputNewPatientListener);
         this.textAreaRemarks.textProperty().addListener(inputNewPatientListener);
+        this.comboBoxStatus.getItems().setAll(Status.values()); // populate ComboBox with enum values
+        this.comboBoxStatus.getSelectionModel().select(Status.ACTIVE); // select the ACTIVE value by default
         this.datePicker.valueProperty().addListener((observableValue, localDate, t1) -> NewTreatmentController.this.buttonAdd.setDisable(NewTreatmentController.this.areInputDataInvalid()));
         this.datePicker.setConverter(new StringConverter<>() {
             @Override
@@ -84,7 +93,22 @@ public class NewTreatmentController {
         LocalTime end = DateConverter.convertStringToLocalTime(textFieldEnd.getText());
         String description = textFieldDescription.getText();
         String remarks = textAreaRemarks.getText();
-        Treatment treatment = new Treatment(patient.getPid(), date, begin, end, description, remarks);
+
+        Status status = comboBoxStatus.getValue();
+        LocalDate blockDate = datePickerBlockDate.getValue();
+
+        // Create Treatment with status and blockDate
+        Treatment treatment = new Treatment(
+                patient.getPid(),
+                date,
+                begin,
+                end,
+                description,
+                remarks,
+                status,
+                blockDate
+        );
+
         createTreatment(treatment);
         controller.readAllAndShowInTableView();
         stage.close();

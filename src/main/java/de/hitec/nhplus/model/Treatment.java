@@ -14,7 +14,8 @@ public class Treatment {
     private String description;
     private String remarks;
 
-    private Status treatmentStatus;
+    private Status status;
+    private LocalDate blockDate;
 
     /**
      * Constructor to initiate an object of class <code>Treatment</code> with the given parameter. Use this constructor
@@ -28,13 +29,15 @@ public class Treatment {
      * @param remarks Remarks to the treatment.
      */
     public Treatment(long pid, LocalDate date, LocalTime begin,
-                     LocalTime end, String description, String remarks) {
+                     LocalTime end, String description, String remarks, Status status, LocalDate blockDate) {
         this.pid = pid;
         this.date = date;
         this.begin = begin;
         this.end = end;
         this.description = description;
         this.remarks = remarks;
+        this.status = status;
+        this.blockDate = blockDate;
     }
 
     /**
@@ -50,7 +53,7 @@ public class Treatment {
      * @param remarks Remarks to the treatment.
      */
     public Treatment(long tid, long pid, LocalDate date, LocalTime begin,
-                     LocalTime end, String description, String remarks) {
+                     LocalTime end, String description, String remarks, Status status, LocalDate blockDate) {
         this.tid = tid;
         this.pid = pid;
         this.date = date;
@@ -58,7 +61,17 @@ public class Treatment {
         this.end = end;
         this.description = description;
         this.remarks = remarks;
+        this.status = status;
+        this.blockDate = blockDate;
     }
+
+    public String getStatus() { return status.toString(); }
+
+    public void setStatus(Status status) { this.status = status; }
+
+    public String getBlockDate() { return blockDate.toString(); }
+
+    public void setBlockDate(String blockDate) { this.blockDate = DateConverter.convertStringToLocalDate(blockDate); }
 
     public long getTid() {
         return tid;
