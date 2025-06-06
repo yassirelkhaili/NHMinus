@@ -19,6 +19,9 @@ public class Patient extends Person {
     private final SimpleStringProperty assets;
     private final List<Treatment> allTreatments = new ArrayList<>();
 
+    private Status patientStatus;
+
+
     /**
      * Constructor to initiate an object of class <code>Patient</code> with the given parameter. Use this constructor
      * to initiate objects, which are not persisted yet, because it will not have a patient id (pid).

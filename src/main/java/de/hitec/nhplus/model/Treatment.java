@@ -14,6 +14,8 @@ public class Treatment {
     private String description;
     private String remarks;
 
+    private Status treatmentStatus;
+
     /**
      * Constructor to initiate an object of class <code>Treatment</code> with the given parameter. Use this constructor
      * to initiate objects, which are not persisted yet, because it will not have a treatment id (tid).
