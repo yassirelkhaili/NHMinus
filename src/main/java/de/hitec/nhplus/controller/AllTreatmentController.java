@@ -67,6 +67,7 @@ public class AllTreatmentController {
 
     public void initialize() {
         new TreatmentLockingService().lockFinishedTreatments();
+        new TreatmentLockingService().deleteTreatmentsOlderThanTenYears();
 
         readAllAndShowInTableView();
         comboBoxPatientSelection.setItems(patientSelection);

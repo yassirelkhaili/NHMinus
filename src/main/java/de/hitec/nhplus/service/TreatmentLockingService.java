@@ -4,6 +4,7 @@ import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.TreatmentDao;
 import de.hitec.nhplus.model.Treatment;
 import de.hitec.nhplus.model.Status;
+import de.hitec.nhplus.utils.DateConverter;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -27,13 +28,35 @@ public class TreatmentLockingService {
                 boolean notYetLocked = !treatment.getStatus().equals(Status.LOCKED.name());
 
                 if (treatmentIsPast && notYetLocked) {
-                    treatment.setStatus(Status.LOCKED);
-                    treatment.setBlockDate(today.toString());
-                    treatmentDao.update(treatment);
+                    if (treatmentIsPast && notYetLocked) {
+                        treatment.setStatus(Status.LOCKED);
+                        if (treatment.getBlockDate() == null) {
+                            treatment.setBlockDate(today.toString());
+                        }
+                        treatmentDao.update(treatment);
+                    }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public void deleteTreatmentsOlderThanTenYears() {
+        TreatmentDao treatmentDao = DaoFactory.getDaoFactory().createTreatmentDao();
+        try {
+            List<Treatment> allTreatments = treatmentDao.readAll();
+            LocalDate tenYearsAgo = LocalDate.now().minusYears(10);
+
+            for (Treatment treatment : allTreatments) {
+                LocalDate treatmentDate = DateConverter.convertStringToLocalDate(treatment.getDate());
+                if (treatmentDate.isBefore(tenYearsAgo)) {
+                    treatmentDao.deleteById(treatment.getTid());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
