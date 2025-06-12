@@ -101,13 +101,12 @@ public class SetUpDB {
         try {
             PatientDao dao = DaoFactory.getDaoFactory().createPatientDao();
             dao.create(
-                    new Patient("Seppl", "Herberger", convertStringToLocalDate("1945-12-01"), "4", "202", "vermögend", "aktiv", "2025-01-01"));
-            dao.create(new Patient("Martina", "Gerdsen", convertStringToLocalDate("1954-08-12"), "5", "010", "arm", "aktiv", "2025-01-01"));
-            dao.create(new Patient("Gertrud", "Franzen", convertStringToLocalDate("1949-04-16"), "3", "002", "normal", "aktiv", "2025-01-01"));
-            dao.create(new Patient("Ahmet", "Yilmaz", convertStringToLocalDate("1941-02-22"), "3", "013", "normal", "aktiv", "2025-01-01"));
-            dao.create(new Patient("Hans", "Neumann", convertStringToLocalDate("1955-12-12"), "2", "001", "sehr vermögend", "aktiv", "2025-01-01"
-                    ));
-            dao.create(new Patient("Elisabeth", "Marouane", convertStringToLocalDate("1958-03-07"), "5", "110", "arm", "aktiv", "2025-01-01"));
+                    new Patient("Seppl", "Herberger", convertStringToLocalDate("1945-12-01"), "4", "202", "vermögend", Status.ACTIVE, convertStringToLocalDate("2025-01-01")));
+            dao.create(new Patient("Martina", "Gerdsen", convertStringToLocalDate("1954-08-12"), "5", "010", "arm", Status.ACTIVE, convertStringToLocalDate("2025-01-01")));
+            dao.create(new Patient("Gertrud", "Franzen", convertStringToLocalDate("1949-04-16"), "3", "002", "normal", Status.ACTIVE, convertStringToLocalDate("2025-01-01")));
+            dao.create(new Patient("Ahmet", "Yilmaz", convertStringToLocalDate("1941-02-22"), "3", "013", "normal", Status.ACTIVE, convertStringToLocalDate("2025-01-01")));
+            dao.create(new Patient("Hans", "Neumann", convertStringToLocalDate("1955-12-12"), "2", "001", "sehr vermögend", Status.ACTIVE, convertStringToLocalDate("2025-01-01")));
+            dao.create(new Patient("Elisabeth", "Marouane", convertStringToLocalDate("1958-03-07"), "5", "110", "arm", Status.ACTIVE, convertStringToLocalDate("2025-01-01")));
         } catch (SQLException exception) {
             exception.printStackTrace();
         }

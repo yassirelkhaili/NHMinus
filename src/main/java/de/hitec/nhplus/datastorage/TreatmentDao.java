@@ -44,8 +44,8 @@ public class TreatmentDao extends DaoImp<Treatment> {
             preparedStatement.setString(4, treatment.getEnd());
             preparedStatement.setString(5, treatment.getDescription());
             preparedStatement.setString(6, treatment.getRemarks());
-            preparedStatement.setString(7, treatment.getStatus());
-            preparedStatement.setString(8, treatment.getBlockDate());
+            preparedStatement.setString(7, String.valueOf(treatment.getStatus()));
+            preparedStatement.setString(8, String.valueOf(treatment.getBlockDate()));
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -189,7 +189,10 @@ public class TreatmentDao extends DaoImp<Treatment> {
             preparedStatement.setString(4, treatment.getEnd());
             preparedStatement.setString(5, treatment.getDescription());
             preparedStatement.setString(6, treatment.getRemarks());
-            preparedStatement.setLong(7, treatment.getTid());
+            preparedStatement.setString(7, treatment.getStatus().toString());
+            preparedStatement.setString(8, String.valueOf(treatment.getBlockDate()));
+            preparedStatement.setLong(9, treatment.getTid()); // wichtig!
+
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -215,4 +218,19 @@ public class TreatmentDao extends DaoImp<Treatment> {
         }
         return preparedStatement;
     }
+
+    public void updateStatus(long tid, String status, String blockDate) {
+        final String SQL = "UPDATE treatment SET status = ?, blockDate = ? WHERE tid = ?";
+        try (PreparedStatement ps = this.connection.prepareStatement(SQL)) {
+            ps.setString(1, status);
+            ps.setString(2, blockDate);
+            ps.setLong(3, tid);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

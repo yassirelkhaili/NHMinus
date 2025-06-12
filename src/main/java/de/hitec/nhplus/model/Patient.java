@@ -21,6 +21,7 @@ public class Patient extends Person {
     private final List<Treatment> allTreatments = new ArrayList<>();
 
     private final SimpleStringProperty patientStatus; //new
+    //private Status patientStatus;
     private final SimpleStringProperty blockDate; //new
 
 
@@ -36,14 +37,14 @@ public class Patient extends Person {
      * @param roomNumber Room number of the patient.
      * @param assets Assets of the patient.
      */
-    public Patient(String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets, String patientStatus, String blockDate) {
+    public Patient(String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets, Status patientStatus, LocalDate blockDate) {
         super(firstName, surname);
         this.dateOfBirth = new SimpleStringProperty(DateConverter.convertLocalDateToString(dateOfBirth));
         this.careLevel = new SimpleStringProperty(careLevel);
         this.roomNumber = new SimpleStringProperty(roomNumber);
         this.assets = new SimpleStringProperty(assets);
-        this.patientStatus = new SimpleStringProperty(patientStatus); //new
-        this.blockDate = new SimpleStringProperty(blockDate); //new
+        this.patientStatus = new SimpleStringProperty(patientStatus.toString()); //new
+        this.blockDate = new SimpleStringProperty(DateConverter.convertLocalDateToString(blockDate)); //new
     }
 
     /**
@@ -58,7 +59,7 @@ public class Patient extends Person {
      * @param roomNumber Room number of the patient.
      * @param assets Assets of the patient.
      */
-    public Patient(long pid, String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets, String patientStatus, String blockDate) {
+    public Patient(long pid, String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets, String patientStatus, LocalDate blockDate) {
         super(firstName, surname);
         this.pid = new SimpleLongProperty(pid);
         this.dateOfBirth = new SimpleStringProperty(DateConverter.convertLocalDateToString(dateOfBirth));
@@ -66,7 +67,7 @@ public class Patient extends Person {
         this.roomNumber = new SimpleStringProperty(roomNumber);
         this.assets = new SimpleStringProperty(assets);
         this.patientStatus = new SimpleStringProperty(patientStatus); //new
-        this.blockDate = new SimpleStringProperty(blockDate); //new
+        this.blockDate = new SimpleStringProperty(DateConverter.convertLocalDateToString(blockDate)); //new
     }
 
     public void setStatus(String status) { this.patientStatus.set(status); }

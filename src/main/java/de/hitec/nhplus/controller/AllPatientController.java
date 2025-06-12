@@ -2,6 +2,7 @@ package de.hitec.nhplus.controller;
 
 import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.PatientDao;
+import de.hitec.nhplus.model.Status;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -283,6 +284,35 @@ public class AllPatientController {
         }
     }
 
+    @FXML
+    public void handleBlock() { //new
+        Patient selectedPatient = this.tableView.getSelectionModel().getSelectedItem();
+        if (selectedPatient != null) {
+            String currentDate = LocalDate.now().toString();
+            try {
+                DaoFactory.getDaoFactory().createPatientDao()
+                        .updateStatus(selectedPatient.getPid(), "LOCKED", currentDate);
+                readAllAndShowInTableView();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void handleDeleteOldBlocked() { //new
+        try {
+            DaoFactory.getDaoFactory().createPatientDao()
+                    .deleteBlockedPatientsBeforeThreshold();
+            readAllAndShowInTableView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     /**
      * This method handles the events fired by the button to add a patient. It collects the data from the
      * <code>TextField</code>s, creates an object of class <code>Patient</code> of it and passes the object to
@@ -297,8 +327,10 @@ public class AllPatientController {
         String careLevel = this.textFieldCareLevel.getText();
         String roomNumber = this.textFieldRoomNumber.getText();
         String assets = this.textFieldAssets.getText();
-        String status = this.textFieldStatus.getText();
-        String blockDate = this.textFieldBlockDate.getText();
+        String statusString = this.textFieldStatus.getText();
+        Status status = Status.valueOf(statusString);
+        String blockDateString = this.textFieldBlockDate.getText();
+        LocalDate blockDate = DateConverter.convertStringToLocalDate(blockDateString);
         try {
             this.dao.create(new Patient(firstName, surname, date, careLevel, roomNumber, assets, status, blockDate));
         } catch (SQLException exception) {
@@ -326,6 +358,13 @@ public class AllPatientController {
         if (!this.textFieldDateOfBirth.getText().isBlank()) {
             try {
                 DateConverter.convertStringToLocalDate(this.textFieldDateOfBirth.getText());
+            } catch (Exception exception) {
+                return false;
+            }
+        }
+        if (!this.textFieldBlockDate.getText().isBlank()) {
+            try {
+                DateConverter.convertStringToLocalDate(this.textFieldBlockDate.getText());
             } catch (Exception exception) {
                 return false;
             }

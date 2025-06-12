@@ -65,11 +65,11 @@ public class Treatment {
         this.blockDate = blockDate;
     }
 
-    public String getStatus() { return status.toString(); }
+    public Status getStatus() { return status; }
 
     public void setStatus(Status status) { this.status = status; }
 
-    public String getBlockDate() { return blockDate.toString(); }
+    public LocalDate getBlockDate() { return blockDate; }
 
     public void setBlockDate(String blockDate) { this.blockDate = DateConverter.convertStringToLocalDate(blockDate); }
 

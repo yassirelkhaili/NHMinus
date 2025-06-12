@@ -1,6 +1,7 @@
 package de.hitec.nhplus.datastorage;
 
 import de.hitec.nhplus.model.Patient;
+import de.hitec.nhplus.model.Status;
 import de.hitec.nhplus.utils.DateConverter;
 
 import java.sql.*;
@@ -85,7 +86,7 @@ public class PatientDao extends DaoImp<Patient> {
                 result.getString(6),
                 result.getString(7),
                 result.getString(8),
-                result.getString(9));
+                DateConverter.convertStringToLocalDate(result.getString(9)));
     }
 
     /**
@@ -117,9 +118,11 @@ public class PatientDao extends DaoImp<Patient> {
         ArrayList<Patient> list = new ArrayList<>();
         while (result.next()) {
             LocalDate date = DateConverter.convertStringToLocalDate(result.getString(4));
+            Status status = Status.valueOf(result.getString(8));
+            LocalDate blockDate = DateConverter.convertStringToLocalDate(result.getString(9));
             Patient patient = new Patient(result.getInt(1), result.getString(2),
                     result.getString(3), date,
-                    result.getString(5), result.getString(6), result.getString(7), result.getString(8), result.getString(9));
+                    result.getString(5), result.getString(6), result.getString(7), status.toString(), blockDate);
             list.add(patient);
         }
         return list;
@@ -133,7 +136,7 @@ public class PatientDao extends DaoImp<Patient> {
      * @return <code>PreparedStatement</code> to update the given patient.
      */
     @Override
-    protected PreparedStatement getUpdateStatement(Patient patient) {
+    protected PreparedStatement getUpdateStatement(Patient patient) { //HIER KANN ICH ALS UPDATE patient nur status und pid nehmen
         PreparedStatement preparedStatement = null;
         try {
             final String SQL =
@@ -181,4 +184,29 @@ public class PatientDao extends DaoImp<Patient> {
         }
         return preparedStatement;
     }
+
+    public void updateStatus(long pid, String status, String blockDate) { //new
+        final String SQL = "UPDATE patient SET status = ?, blockDate = ? WHERE pid = ?";
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(SQL)) {
+            preparedStatement.setString(1, status);
+            preparedStatement.setString(2, blockDate);
+            preparedStatement.setLong(3, pid);
+            preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void deleteBlockedPatientsBeforeThreshold() {
+        final String SQL =
+                "DELETE FROM patient WHERE status = 'LOCKED' AND DATE(blockDate, '+10 years') < DATE('now')";
+        try (PreparedStatement ps = this.connection.prepareStatement(SQL)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

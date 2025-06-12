@@ -4,6 +4,8 @@ import de.hitec.nhplus.Main;
 import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.PatientDao;
 import de.hitec.nhplus.datastorage.TreatmentDao;
+import de.hitec.nhplus.model.Status;
+import de.hitec.nhplus.service.TreatmentLockingService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,7 +20,9 @@ import de.hitec.nhplus.model.Treatment;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AllTreatmentController {
 
@@ -55,12 +59,15 @@ public class AllTreatmentController {
     @FXML
     private Button buttonDelete;
 
+
     private final ObservableList<Treatment> treatments = FXCollections.observableArrayList();
     private TreatmentDao dao;
     private final ObservableList<String> patientSelection = FXCollections.observableArrayList();
     private ArrayList<Patient> patientList;
 
     public void initialize() {
+        new TreatmentLockingService().lockFinishedTreatments();
+
         readAllAndShowInTableView();
         comboBoxPatientSelection.setItems(patientSelection);
         comboBoxPatientSelection.getSelectionModel().select(0);
@@ -85,15 +92,16 @@ public class AllTreatmentController {
     }
 
     public void readAllAndShowInTableView() {
-        this.treatments.clear();
-        comboBoxPatientSelection.getSelectionModel().select(0);
-        this.dao = DaoFactory.getDaoFactory().createTreatmentDao();
         try {
-            this.treatments.addAll(dao.readAll());
+            this.dao = DaoFactory.getDaoFactory().createTreatmentDao();
+            List<Treatment> freshList = dao.readAll(); // erst separat lesen
+            this.treatments.setAll(freshList);         // dann einmal vollständig neu setzen
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
     }
+
+
 
     private void createComboBoxData() {
         PatientDao dao = DaoFactory.getDaoFactory().createPatientDao();
@@ -153,6 +161,41 @@ public class AllTreatmentController {
             exception.printStackTrace();
         }
     }
+
+    @FXML
+    public void handleBlockTreatment() {
+        Treatment selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            try {
+                DaoFactory.getDaoFactory().createTreatmentDao()
+                        .updateStatus(selected.getTid(), String.valueOf(Status.LOCKED), LocalDate.now().toString());
+                readAllAndShowInTableView(); // Methode zum Neuladen
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void handleDeleteOldTreatments() {
+        TreatmentDao dao = DaoFactory.getDaoFactory().createTreatmentDao();
+        try {
+            List<Treatment> allTreatments = dao.readAll();
+            LocalDate today = LocalDate.now();
+            for (Treatment treatment : allTreatments) {
+                if (treatment.getStatus() == Status.LOCKED &&
+                        treatment.getBlockDate() != null &&
+                        treatment.getBlockDate().plusYears(10).isBefore(today)) {
+                    dao.deleteById(treatment.getTid());
+                }
+            }
+            readAllAndShowInTableView();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @FXML
     public void handleNewTreatment() {

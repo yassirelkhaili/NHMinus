@@ -3,6 +3,7 @@ package de.hitec.nhplus.controller;
 import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.PatientDao;
 import de.hitec.nhplus.datastorage.TreatmentDao;
+import de.hitec.nhplus.model.Status;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -36,6 +37,12 @@ public class TreatmentController {
     @FXML
     private DatePicker datePicker;
 
+    @FXML
+    private ComboBox<Status> comboBoxStatus;
+
+    @FXML
+    private DatePicker datePickerBlockDate;
+
     private AllTreatmentController controller;
     private Stage stage;
     private Patient patient;
@@ -63,6 +70,12 @@ public class TreatmentController {
         this.textFieldEnd.setText(this.treatment.getEnd());
         this.textFieldDescription.setText(this.treatment.getDescription());
         this.textAreaRemarks.setText(this.treatment.getRemarks());
+
+        //new
+        this.comboBoxStatus.setItems(javafx.collections.FXCollections.observableArrayList(Status.values()));
+        this.comboBoxStatus.setValue(treatment.getStatus());
+
+        this.datePickerBlockDate.setValue(treatment.getBlockDate());
     }
 
     @FXML
@@ -72,6 +85,11 @@ public class TreatmentController {
         this.treatment.setEnd(textFieldEnd.getText());
         this.treatment.setDescription(textFieldDescription.getText());
         this.treatment.setRemarks(textAreaRemarks.getText());
+
+        // NEU: Status und Sperrdatum übernehmen
+        this.treatment.setStatus(comboBoxStatus.getValue());
+        this.treatment.setBlockDate(String.valueOf(datePickerBlockDate.getValue()));
+
         doUpdate();
         controller.readAllAndShowInTableView();
         stage.close();
