@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AllTreatmentController {
 
@@ -59,6 +61,12 @@ public class AllTreatmentController {
     @FXML
     private Button buttonDelete;
 
+    @FXML
+    private ComboBox<String> comboBoxStatusFilter;
+
+    private Map<Long, Patient> patientMap = new HashMap<>();
+
+
 
     private final ObservableList<Treatment> treatments = FXCollections.observableArrayList();
     private TreatmentDao dao;
@@ -69,9 +77,28 @@ public class AllTreatmentController {
         new TreatmentLockingService().lockFinishedTreatments();
         new TreatmentLockingService().deleteTreatmentsOlderThanTenYears();
 
+        PatientDao patientDao = DaoFactory.getDaoFactory().createPatientDao();
+        try {
+            for (Patient p : patientDao.readAll()) {
+                patientMap.put((long) p.getPid(), p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
         readAllAndShowInTableView();
+        this.createComboBoxData();
         comboBoxPatientSelection.setItems(patientSelection);
         comboBoxPatientSelection.getSelectionModel().select(0);
+
+        comboBoxStatusFilter.setItems(FXCollections.observableArrayList("alle", "nur aktive", "nur gesperrte"));
+        comboBoxStatusFilter.getSelectionModel().select(0);
+
+        // Listener für beide Filter
+        comboBoxPatientSelection.setOnAction(e -> filterTreatments());
+        comboBoxStatusFilter.setOnAction(e -> filterTreatments());
+
 
         this.columnId.setCellValueFactory(new PropertyValueFactory<>("tid"));
         this.columnPid.setCellValueFactory(new PropertyValueFactory<>("pid"));
@@ -89,8 +116,40 @@ public class AllTreatmentController {
                 (observableValue, oldTreatment, newTreatment) ->
                         AllTreatmentController.this.buttonDelete.setDisable(newTreatment == null));
 
-        this.createComboBoxData();
+
     }
+
+    private void filterTreatments() {
+        String selectedPatient = comboBoxPatientSelection.getValue();
+        if (selectedPatient == null) {
+            return; // Abbrechen, wenn noch keine Auswahl getroffen wurde
+        }
+        String selectedStatus = comboBoxStatusFilter.getValue();
+
+        treatments.clear();
+
+        try {
+            List<Treatment> allTreatments = dao.readAll();
+
+            for (Treatment t : allTreatments) {
+                boolean matchesStatus = switch (selectedStatus) {
+                    case "nur aktive" -> t.getStatus() == Status.ACTIVE;
+                    case "nur gesperrte" -> t.getStatus() == Status.LOCKED;
+                    default -> true;
+                };
+
+                boolean matchesPatient = selectedPatient.equals("alle") ||
+                        patientMap.get(t.getPid()).getSurname().equals(selectedPatient); // vorausgesetzt du hast patientMap
+
+                if (matchesPatient && matchesStatus) {
+                    treatments.add(t);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void readAllAndShowInTableView() {
         try {

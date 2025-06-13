@@ -29,9 +29,9 @@ public class TreatmentLockingService {
 
                 if (treatmentIsPast && notYetLocked) {
                     if (treatmentIsPast && notYetLocked) {
-                        treatment.setStatus(Status.LOCKED);
-                        if (treatment.getBlockDate() == null) {
+                        if (treatment.getStatus() != Status.LOCKED) {
                             treatment.setBlockDate(today.toString());
+                            treatment.setStatus(Status.LOCKED);
                         }
                         treatmentDao.update(treatment);
                     }
