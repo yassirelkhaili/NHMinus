@@ -135,14 +135,13 @@ public class Patient extends Person {
         return true;
     }
 
+    /**
+     * Returns a formatted string representation of this patient for display in lists.
+     * This overrides the default toString() method.
+     */
+    @Override
     public String toString() {
-        return "Patient" + "\nMNID: " + this.pid +
-                "\nFirstname: " + this.getFirstName() +
-                "\nSurname: " + this.getSurname() +
-                "\nBirthday: " + this.dateOfBirth +
-                "\nCarelevel: " + this.careLevel +
-                "\nRoomnumber: " + this.roomNumber +
-                "\nAssets: " + this.assets +
-                "\n";
+        return this.getSurname() + ", " + this.getFirstName() + 
+               " (Pflegegrad: " + this.getCareLevel() + ", Raum: " + this.getRoomNumber() + ")";
     }
 }
