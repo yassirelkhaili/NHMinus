@@ -32,7 +32,7 @@ public class PatientDao extends DaoImp<Patient> {
     protected PreparedStatement getCreateStatement(Patient patient) {
         PreparedStatement preparedStatement = null;
         try {
-            final String SQL = "INSERT INTO patient (firstname, surname, dateOfBirth, carelevel, roomnumber, assets) " +
+            final String SQL = "INSERT INTO patient (firstname, surname, dateOfBirth, carelevel, roomnumber) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
             preparedStatement = this.connection.prepareStatement(SQL);
             preparedStatement.setString(1, patient.getFirstName());
@@ -40,7 +40,6 @@ public class PatientDao extends DaoImp<Patient> {
             preparedStatement.setString(3, patient.getDateOfBirth());
             preparedStatement.setString(4, patient.getCareLevel());
             preparedStatement.setString(5, patient.getRoomNumber());
-            preparedStatement.setString(6, patient.getAssets());
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -147,7 +146,6 @@ public class PatientDao extends DaoImp<Patient> {
             preparedStatement.setString(3, patient.getDateOfBirth());
             preparedStatement.setString(4, patient.getCareLevel());
             preparedStatement.setString(5, patient.getRoomNumber());
-            preparedStatement.setString(6, patient.getAssets());
             preparedStatement.setLong(7, patient.getPid());
         } catch (SQLException exception) {
             exception.printStackTrace();
