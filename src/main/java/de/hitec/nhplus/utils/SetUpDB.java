@@ -5,9 +5,11 @@ import de.hitec.nhplus.datastorage.DaoFactory;
 import de.hitec.nhplus.datastorage.PatientDao;
 import de.hitec.nhplus.datastorage.TreatmentDao;
 import de.hitec.nhplus.datastorage.UserDao;
+import de.hitec.nhplus.datastorage.CaregiverDao;
 import de.hitec.nhplus.model.Patient;
 import de.hitec.nhplus.model.Treatment;
 import de.hitec.nhplus.model.User;
+import de.hitec.nhplus.model.Caregiver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,9 +41,11 @@ public class SetUpDB {
         SetUpDB.setUpTablePatient(connection);
         SetUpDB.setUpTableTreatment(connection);
         SetUpDB.setUpTableUser(connection);
+        SetUpDB.createCaregiverTable();
         SetUpDB.setUpPatients();
         SetUpDB.setUpTreatments();
-        //SetUpDB.setUpUsers();
+        SetUpDB.setUpUsers();
+        SetUpDB.setUpCaregivers();
     }
 
     /**
@@ -49,8 +53,11 @@ public class SetUpDB {
      */
     public static void wipeDb(Connection connection) {
         try (Statement statement = connection.createStatement()) {
-            statement.execute("DROP TABLE patient");
-            statement.execute("DROP TABLE treatment");
+            statement.execute("DROP TABLE IF EXISTS caregiver_patient");
+            statement.execute("DROP TABLE IF EXISTS caregiver");
+            statement.execute("DROP TABLE IF EXISTS treatment");
+            statement.execute("DROP TABLE IF EXISTS patient");
+            statement.execute("DROP TABLE IF EXISTS users");
         } catch (SQLException exception) {
             System.out.println(exception.getMessage());
         }
@@ -218,6 +225,77 @@ public class SetUpDB {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    private static void createCaregiverTable() {
+        String createCaregiverTable = "CREATE TABLE IF NOT EXISTS caregiver ("
+                + "cid INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "firstname TEXT NOT NULL,"
+                + "surname TEXT NOT NULL,"
+                + "telephone TEXT,"
+                + "qualification TEXT,"
+                + "is_active BOOLEAN DEFAULT 1"
+                + ");";
+                
+        String createCaregiverPatientTable = "CREATE TABLE IF NOT EXISTS caregiver_patient ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "caregiver_id INTEGER NOT NULL,"
+                + "patient_id INTEGER NOT NULL,"
+                + "FOREIGN KEY (caregiver_id) REFERENCES caregiver(cid),"
+                + "FOREIGN KEY (patient_id) REFERENCES patient(pid),"
+                + "UNIQUE(caregiver_id, patient_id)"
+                + ");";
+                
+        try (Statement statement = ConnectionBuilder.getConnection().createStatement()) {
+            statement.executeUpdate(createCaregiverTable);
+            statement.executeUpdate(createCaregiverPatientTable);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void setUpCaregivers() {
+        try {
+            CaregiverDao dao = DaoFactory.getDaoFactory().createCaregiverDao();
+            
+            // Add sample caregivers
+            dao.create(new Caregiver("Maria", "Schmidt", "0123456789", "Examinierte Pflegefachkraft"));
+            dao.create(new Caregiver("Thomas", "Müller", "0234567890", "Pflegehelfer"));
+            dao.create(new Caregiver("Anna", "Weber", "0345678901", "Examinierte Pflegefachkraft"));
+            dao.create(new Caregiver("Klaus", "Fischer", "0456789012", "Pflegeassistent"));
+            
+            // Assign some patients to caregivers
+            dao.assignPatient(1, 1); // Maria Schmidt -> Patient 1
+            dao.assignPatient(1, 2); // Maria Schmidt -> Patient 2
+            dao.assignPatient(2, 3); // Thomas Müller -> Patient 3
+            dao.assignPatient(3, 1); // Anna Weber -> Patient 1
+            dao.assignPatient(3, 4); // Anna Weber -> Patient 4
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates all database tables
+     */
+    public static void createTables() {
+        Connection connection = ConnectionBuilder.getConnection();
+        setUpTablePatient(connection);
+        setUpTableTreatment(connection);
+        setUpTableUser(connection);
+        createCaregiverTable();
+    }
+
+    /**
+     * Sets up the database with tables and sample data
+     */
+    public static void setupDatabase() {
+        createTables();
+        setUpPatients();
+        setUpTreatments();
+        setUpUsers();
+        setUpCaregivers();
     }
 
     public static void main(String[] args) {
