@@ -48,9 +48,8 @@ public class Patient extends Person {
      * @param dateOfBirth Date of birth of the patient.
      * @param careLevel Care level of the patient.
      * @param roomNumber Room number of the patient.
-     * @param assets Assets of the patient.
      */
-    public Patient(long pid, String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber, String assets) {
+    public Patient(long pid, String firstName, String surname, LocalDate dateOfBirth, String careLevel, String roomNumber) {
         super(firstName, surname);
         this.pid = new SimpleLongProperty(pid);
         this.dateOfBirth = new SimpleStringProperty(DateConverter.convertLocalDateToString(dateOfBirth));
