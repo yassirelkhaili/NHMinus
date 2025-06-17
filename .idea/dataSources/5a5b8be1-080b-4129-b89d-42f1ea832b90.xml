@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="nursingHome.db">
   <database-model serializer="dbm" dbms="SQLITE" family-id="SQLITE" format-version="4.53">
-    <root id="1"/>
+    <root id="1">
+      <ServerVersion>3.45.1</ServerVersion>
+    </root>
     <schema id="2" parent="1" name="main">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-03-05.09:45:32</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-06-03.11:50:36</LastIntrospectionLocalTimestamp>
     </schema>
     <table id="3" parent="2" name="patient"/>
     <table id="4" parent="2" name="sqlite_master">
@@ -14,40 +16,36 @@
       <System>1</System>
     </table>
     <table id="6" parent="2" name="treatment"/>
-    <column id="7" parent="3" name="pid">
+    <table id="7" parent="2" name="users"/>
+    <column id="8" parent="3" name="pid">
       <AutoIncrement>1</AutoIncrement>
       <Position>1</Position>
       <StoredType>INTEGER|0s</StoredType>
     </column>
-    <column id="8" parent="3" name="firstname">
+    <column id="9" parent="3" name="firstname">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="9" parent="3" name="surname">
+    <column id="10" parent="3" name="surname">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="10" parent="3" name="dateOfBirth">
+    <column id="11" parent="3" name="dateOfBirth">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="11" parent="3" name="carelevel">
+    <column id="12" parent="3" name="carelevel">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>TEXT|0s</StoredType>
     </column>
-    <column id="12" parent="3" name="roomnumber">
+    <column id="13" parent="3" name="roomnumber">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>TEXT|0s</StoredType>
-    </column>
-    <column id="13" parent="3" name="assets">
-      <NotNull>1</NotNull>
-      <Position>7</Position>
-      <StoredType>TEXt|0s</StoredType>
     </column>
     <key id="14" parent="3">
       <ColNames>pid</ColNames>
@@ -123,6 +121,79 @@
     <key id="30" parent="6">
       <ColNames>tid</ColNames>
       <Primary>1</Primary>
+    </key>
+    <column id="31" parent="7" name="uid">
+      <AutoIncrement>1</AutoIncrement>
+      <Position>1</Position>
+      <StoredType>INTEGER|0s</StoredType>
+    </column>
+    <column id="32" parent="7" name="first_name">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <column id="33" parent="7" name="surname">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <column id="34" parent="7" name="username">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <column id="35" parent="7" name="email">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <column id="36" parent="7" name="password_hash">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <column id="37" parent="7" name="role">
+      <DefaultExpression>&apos;USER&apos;</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StoredType>TEXT|0s</StoredType>
+    </column>
+    <column id="38" parent="7" name="is_active">
+      <DefaultExpression>1</DefaultExpression>
+      <Position>8</Position>
+      <StoredType>BOOLEAN|0s</StoredType>
+    </column>
+    <column id="39" parent="7" name="created_at">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>9</Position>
+      <StoredType>DATETIME|0s</StoredType>
+    </column>
+    <column id="40" parent="7" name="updated_at">
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <Position>10</Position>
+      <StoredType>DATETIME|0s</StoredType>
+    </column>
+    <index id="41" parent="7" name="sqlite_autoindex_users_1">
+      <ColNames>username</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <index id="42" parent="7" name="sqlite_autoindex_users_2">
+      <ColNames>email</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <Unique>1</Unique>
+    </index>
+    <key id="43" parent="7">
+      <ColNames>uid</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="44" parent="7">
+      <ColNames>username</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_users_1</UnderlyingIndexName>
+    </key>
+    <key id="45" parent="7">
+      <ColNames>email</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_users_2</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>
